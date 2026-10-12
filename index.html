@@ -1,0 +1,758 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Happy Birthday, My Boo! 🎂</title>
+    <style>
+        :root {
+            --pink: #ff75a8;
+            --deep: #7b2857
+        }
+
+        * {
+            box-sizing: border-box
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            font-family: "Trebuchet MS", Arial, sans-serif;
+            color: var(--deep);
+            text-align: center;
+            background: radial-gradient(circle at 15% 15%, #ffe0f0 0 2px, transparent 3px), radial-gradient(circle at 80% 25%, #fff0b5 0 3px, transparent 4px), linear-gradient(135deg, #ffb7d5, #d8c5ff, #fff0c7);
+            background-size: 100px 100px, 130px 130px, cover;
+            overflow-x: hidden
+        }
+
+        button {
+            font: inherit;
+            cursor: pointer
+        }
+
+        .page {
+            display: none;
+            width: 100%;
+            min-height: 100vh;
+            padding: 32px 16px 55px;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            position: relative;
+            z-index: 1
+        }
+
+        .page.active {
+            display: flex
+        }
+
+        .panel {
+            width: min(100%, 620px);
+            padding: 25px 18px;
+            border: 2px solid #ffffffc9;
+            border-radius: 28px;
+            background: #fffaf0e8;
+            box-shadow: 0 15px 45px #8a356c25;
+            backdrop-filter: blur(7px)
+        }
+
+        h1 {
+            font-size: clamp(2rem, 7vw, 3.4rem);
+            margin: 8px 0 15px
+        }
+
+        h2 {
+            font-size: clamp(1.5rem, 5vw, 2.2rem)
+        }
+
+        p {
+            line-height: 1.65
+        }
+
+        button.primary {
+            border: 0;
+            border-radius: 999px;
+            padding: 14px 23px;
+            margin: 8px 4px;
+            background: linear-gradient(135deg, #ff77aa, #dca6ff);
+            color: #fff;
+            font-weight: bold;
+            box-shadow: 0 6px 16px #d36ca744
+        }
+
+        button.secondary {
+            border: 2px solid #f2a4c9;
+            border-radius: 999px;
+            padding: 11px 18px;
+            margin: 6px;
+            background: #fff;
+            color: var(--deep)
+        }
+
+        .small {
+            font-size: .92rem;
+            opacity: .8
+        }
+
+        .emoji {
+            font-size: 3rem
+        }
+
+        #party {
+            position: fixed;
+            inset: 0;
+            z-index: -1;
+            pointer-events: none;
+            overflow: hidden
+        }
+
+        .confetti {
+            position: absolute;
+            top: -25px;
+            width: 9px;
+            height: 15px;
+            animation: fall linear infinite;
+            border-radius: 3px
+        }
+
+        @keyframes fall {
+            to {
+                transform: translateY(110vh) rotate(800deg)
+            }
+        }
+
+        .pulse {
+            animation: pulse 1.5s infinite
+        }
+
+        @keyframes pulse {
+            50% {
+                transform: scale(1.04)
+            }
+        }
+
+        .tap-hint {
+            display: inline-block;
+            padding: 15px 22px;
+            border-radius: 999px;
+            background: linear-gradient(135deg, #ff77aa, #dca6ff);
+            color: white;
+            font-weight: bold;
+            animation: pulse 1.3s infinite;
+            cursor: pointer
+        }
+
+        /* File 1 welcome-screen styling, added only for the first screen. */
+        .welcome {
+            cursor: pointer;
+            user-select: none;
+            background: radial-gradient(circle at 20% 20%, #ffffffaa 0 3px, transparent 4px), radial-gradient(circle at 80% 35%, #ffffffaa 0 4px, transparent 5px), radial-gradient(circle at 30% 75%, #ffffffaa 0 3px, transparent 4px), linear-gradient(135deg, #ffb7d0, #ffe7ef, #e8d9ff);
+            position: relative;
+            isolation: isolate
+        }
+
+        .welcome .panel {
+            display: none
+        }
+
+        .welcome-card {
+            position: relative;
+            z-index: 3;
+            max-width: 600px;
+            width: 100%;
+            padding: 35px 20px;
+            border: 2px solid #ffffffc9;
+            border-radius: 30px;
+            background: #ffffff9c;
+            box-shadow: 0 12px 35px #a84d7920;
+            pointer-events: none
+        }
+
+        .big-heart {
+            font-size: clamp(4rem, 15vw, 7rem);
+            animation: heartbeat 1.3s infinite
+        }
+
+        @keyframes heartbeat {
+
+            0%,
+            100% {
+                transform: scale(1)
+            }
+
+            50% {
+                transform: scale(1.12)
+            }
+        }
+
+        .hint {
+            margin-top: 25px;
+            font-size: .95rem;
+            letter-spacing: 2px;
+            animation: blink 1.5s infinite
+        }
+
+        @keyframes blink {
+            50% {
+                opacity: .45
+            }
+        }
+
+        /* Keep File 2's decorative confetti behind all page content. */
+        #party {
+            z-index: 0
+        }
+
+        #party .confetti {
+            opacity: .7
+        }
+
+        .welcome {
+            background: transparent
+        }
+
+        .welcome>* {
+            position: relative;
+            z-index: 1
+        }
+
+        @media(max-width:450px) {
+            .welcome-card {
+                padding: 28px 16px
+            }
+        }
+
+        .cake-stage {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0;
+            width: 100%;
+            max-width: 410px;
+            margin: 12px auto 4px;
+            min-height: 245px
+        }
+
+        .cake-area {
+            position: relative;
+            width: 270px;
+            max-width: 72%;
+            height: 235px;
+            flex: 1
+        }
+
+        .cake {
+            position: absolute;
+            bottom: 18px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 205px;
+            max-width: 100%
+        }
+
+        .cake-top {
+            height: 35px;
+            border-radius: 50%;
+            background: #ffe0f0;
+            border: 3px solid #fff;
+            position: relative;
+            z-index: 2
+        }
+
+        .cake-body {
+            height: 88px;
+            margin-top: -7px;
+            border-radius: 10px 10px 20px 20px;
+            background: linear-gradient(#ffb4d3 0 25%, #ff80b2 25% 100%);
+            border: 3px solid #fff;
+            box-shadow: inset 0 -10px #eb6198
+        }
+
+        .cake-body:before {
+            content: "🍓  🍒  🍓";
+            position: relative;
+            display: block;
+            top: 30px;
+            font-size: 20px
+        }
+
+        .plate {
+            height: 17px;
+            width: 230px;
+            max-width: 110%;
+            position: absolute;
+            bottom: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #fff;
+            border-radius: 50%;
+            box-shadow: 0 5px #e7a8cc
+        }
+
+        .candle {
+            position: absolute;
+            bottom: 126px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 72px;
+            height: 72px;
+            border-radius: 9px 9px 5px 5px;
+            background: repeating-linear-gradient(45deg, #fff 0 9px, #ff80af 9px 18px);
+            border: 2px solid #fff;
+            box-shadow: 0 3px 7px #8a356c25;
+            z-index: 3
+        }
+
+        .candle-number {
+            position: absolute;
+            inset: 0;
+            display: grid;
+            place-items: center;
+            font-size: 27px;
+            font-weight: bold;
+            color: #8a285b;
+            text-shadow: 0 1px #fff
+        }
+
+        .flame {
+            position: absolute;
+            left: 50%;
+            top: -31px;
+            transform: translateX(-50%);
+            width: 20px;
+            height: 29px;
+            border-radius: 60% 40% 55% 45%;
+            background: linear-gradient(#fff9a6, #ff9b35, #ff5b48);
+            box-shadow: 0 0 20px #ffb34c;
+            animation: flicker .25s infinite alternate
+        }
+
+        .flame:after {
+            content: "";
+            position: absolute;
+            width: 8px;
+            height: 13px;
+            top: 8px;
+            left: 6px;
+            background: #fff9d8;
+            border-radius: 50%
+        }
+
+        .flame.out {
+            display: none
+        }
+
+        @keyframes flicker {
+            from {
+                transform: translateX(-50%) rotate(-5deg) scale(.95)
+            }
+
+            to {
+                transform: translateX(-50%) rotate(5deg) scale(1.08)
+            }
+        }
+
+        .gift {
+            font-size: 4.3rem;
+            line-height: 1.2;
+            background: transparent;
+            border: 0;
+            padding: 0 4px;
+            filter: drop-shadow(0 7px 5px #9d548933);
+            transition: transform .2s;
+            flex: 0 0 auto
+        }
+
+        .gift:hover {
+            transform: scale(1.08) rotate(-3deg)
+        }
+
+        .gift.locked {
+            opacity: .8
+        }
+
+        .coupon-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 12px;
+            margin-top: 20px
+        }
+
+        .coupon {
+            padding: 18px 13px;
+            border: 2px dashed #ed83b3;
+            border-radius: 18px;
+            background: #fff;
+            text-align: left
+        }
+
+        .coupon h3 {
+            margin: 0 0 8px
+        }
+
+        .coupon p {
+            margin: 5px 0 12px;
+            font-size: .94rem
+        }
+
+        .coupon button {
+            width: 100%
+        }
+
+        .coupon.used {
+            opacity: .55;
+            background: #f2f0f2;
+            border-color: #aaa
+        }
+
+        .coupon.used h3:after {
+            content: " ✓ USED";
+            font-size: .75rem
+        }
+
+        #message {
+            min-height: 55px;
+            font-weight: bold;
+            padding: 8px
+        }
+
+        .ending {
+            font-size: 1.15rem;
+            font-weight: bold;
+            background: #fff;
+            border-radius: 18px;
+            padding: 16px;
+            margin: 12px 0
+        }
+
+        [hidden] {
+            display: none !important
+        }
+
+        @media(max-width:390px) {
+            .panel {
+                padding: 22px 12px
+            }
+
+            .cake-stage {
+                gap: 0
+            }
+
+            .cake-area {
+                width: 235px
+            }
+
+            .cake {
+                width: 175px
+            }
+
+            .plate {
+                width: 200px
+            }
+
+            .candle {
+                width: 66px;
+                height: 68px
+            }
+
+            .gift {
+                font-size: 3.5rem
+            }
+        }
+
+        /* Screenshot-matched welcome card and birthday panel */
+        .welcome {
+            background: linear-gradient(135deg, #ffb7d5, #ffe7ef, #e8d9ff);
+        }
+
+        .welcome-card {
+            max-width: 750px;
+            min-height: 500px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 42px 24px;
+            border-radius: 38px;
+            background: #fffaf0d9;
+            border: 2px solid #fff;
+        }
+
+        .welcome-card h1 {
+            color: #df2f6d;
+            font-size: clamp(2.5rem, 7vw, 4.5rem);
+        }
+
+        .welcome-card p {
+            font-size: 1.1rem;
+        }
+
+        .welcome .hint {
+            background: transparent;
+            color: #80516a;
+            box-shadow: none;
+            letter-spacing: 3px;
+        }
+
+        #birthday .panel {
+            width: min(100%, 744px);
+            min-height: 100vh;
+            border-radius: 0;
+            background: #fffaf3f2;
+            border: 0;
+            padding: 18px 22px 34px;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+        }
+
+        #birthday h1 {
+            font-size: clamp(2.3rem, 6vw, 4rem);
+        }
+
+        #birthday .cake-stage {
+            min-height: 265px;
+            margin: 18px auto 8px;
+        }
+
+        .gift.locked {
+            opacity: .8;
+        }
+
+        #giftHint {
+            margin: 0 0 8px;
+            font-weight: bold;
+        }
+
+        @media(max-width:600px) {
+            .welcome-card {
+                min-height: 440px;
+                padding: 30px 16px
+            }
+
+            #birthday .panel {
+                padding: 16px 12px 28px
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div id="party"></div>
+    <section class="page active welcome" id="welcome" aria-label="Tap anywhere to begin">
+        <div class="welcome-card">
+            <h1>HAPPY 21st BIRTHDAY BOO</h1>
+            <div class="big-heart">💗</div>
+            <!-- <p>Someone very special has a birthday today...</p> -->
+            <p>This is real I swear💙</p>
+            <div class="hint">✨ TAP ANYWHERE TO BEGIN ✨</div>
+        </div>
+    </section>
+    <section class="page" id="birthday">
+        <div class="panel">
+            <h1>For Boo I'm always proud of 💕</h1>
+            <p id="intro">I hope you like strawberry🤞</p>
+            <div class="cake-stage">
+                <div class="cake-area">
+                    <div class="plate"></div>
+                    <div class="cake">
+                        <div class="cake-top"></div>
+                        <div class="cake-body"></div>
+                    </div>
+                    <div class="candle" id="candle">
+                        <div class="flame" id="flame"></div>
+                        <div class="candle-number" id="candleNumber">21</div>
+                    </div>
+                </div>
+                <button class="gift locked" onclick="tryGift()" aria-label="Birthday present">🎁</button>
+            </div>
+            <h2 id="countdown">Ready?</h2>
+            <p id="message">Make a wish! ✨</p>
+            <button class="primary" id="startCountdown" onclick="beginCountdown()">Ready! 🎂</button>
+            <p id="giftHint" class="small">The present unlocks after the candle goes out. 🎁</p>
+        </div>
+    </section>
+    <section class="page" id="couponsPage">
+        <div class="panel">
+            <div class="emoji">🎁🎟️💗</div>
+            <h1>Your Ridiculous Coupon Book!</h1>
+            <!-- <p>Here are your ridiculous privileges, Boo. Redeem them with your favourite idiot. 😌</p> -->
+            <p class="small">Each coupon can only be used once on this browser. Choose wisely, Love!</p>
+            <div class="coupon-grid" id="couponGrid"></div>
+            <div class="ending">Happy birthday Boo. 💗<br><span style="font-size:.95rem;font-weight:normal">The best
+                    gift is still getting to know you, laugh with you, and make more memories together.</span></div>
+            <button class="secondary" onclick="showPage('birthday')">Back to the cake 🎂</button>
+        </div>
+    </section>
+    <script>
+        const party = document.getElementById("party");
+        for (let i = 0; i < 65; i++) {
+            const bit = document.createElement("div"); bit.className = "confetti";
+            bit.style.left = Math.random() * 100 + "%";
+            bit.style.animationDuration = (4 + Math.random() * 7) + "s";
+            bit.style.animationDelay = (-Math.random() * 10) + "s";
+            bit.style.background = ["#ff5d9e", "#ffd166", "#9c7bff", "#64d8cb", "#ff9866", "#fff"][Math.floor(Math.random() * 6)];
+            party.appendChild(bit);
+        }
+
+        /* Birthday progress persists in this browser. Refreshing after starting
+           returns to the cake screen; the candle/gift stay unlocked if completed. */
+        const PROGRESS_KEY = "myBooBirthdayProgress_v2";
+        function getProgress() {
+            try { return JSON.parse(localStorage.getItem(PROGRESS_KEY) || "{}"); }
+            catch { return {}; }
+        }
+        function saveProgress(patch) {
+            try { localStorage.setItem(PROGRESS_KEY, JSON.stringify({ ...getProgress(), ...patch })); }
+            catch (e) { console.warn("Progress could not be saved", e); }
+        }
+
+        /* Browser-generated birthday melody; starts after her first tap. */
+        let audioContext;
+        function playBirthdaySong() {
+            try {
+                audioContext = audioContext || new (window.AudioContext || window.webkitAudioContext)();
+                audioContext.resume();
+                const melody = [[392, .32], [392, .32], [440, .64], [392, .64], [523, .64], [494, 1], [392, .32], [392, .32], [440, .64], [392, .64], [587, .64], [523, 1], [392, .32], [392, .32], [784, .64], [659, .64], [523, .64], [494, .64], [440, 1], [698, .32], [698, .32], [659, .64], [523, .64], [587, .64], [523, 1]];
+                let t = audioContext.currentTime + .15;
+                melody.forEach(([freq, dur]) => {
+                    const osc = audioContext.createOscillator(), gain = audioContext.createGain();
+                    osc.type = "sine"; osc.frequency.value = freq;
+                    gain.gain.setValueAtTime(.0001, t); gain.gain.exponentialRampToValueAtTime(.12, t + .03);
+                    gain.gain.setValueAtTime(.12, t + dur * .7); gain.gain.exponentialRampToValueAtTime(.0001, t + dur - .02);
+                    osc.connect(gain); gain.connect(audioContext.destination); osc.start(t); osc.stop(t + dur); t += dur + .04;
+                });
+            } catch (e) { console.log("Audio unavailable", e); }
+        }
+
+        function showPage(id) {
+            document.querySelectorAll(".page").forEach(p => p.classList.remove("active"));
+            document.getElementById(id).classList.add("active");
+            window.scrollTo({ top: 0, behavior: "smooth" });
+        }
+
+        const countdownEl = document.getElementById("countdown");
+        const messageEl = document.getElementById("message");
+        const flame = document.getElementById("flame");
+        const startBtn = document.getElementById("startCountdown");
+        const gift = document.querySelector(".gift");
+        let birthdayStarted = false;
+        let countdownBusy = false;
+        let candleBlown = false;
+
+        function startBirthday() {
+            if (birthdayStarted) return;
+            birthdayStarted = true;
+            saveProgress({ started: true });
+            playBirthdaySong();
+            showPage("birthday");
+        }
+        document.getElementById("welcome").addEventListener("click", startBirthday);
+
+        function unlockGift() {
+            candleBlown = true;
+            flame.classList.add("out");
+            countdownEl.textContent = "YEYYYYY!! 🎉";
+            messageEl.textContent = "IT WORKED! HAPPY BIRTHDAYYYYYY💖";
+            startBtn.hidden = true;
+            gift.classList.remove("locked");
+            gift.classList.add("pulse");
+            saveProgress({ started: true, candleBlown: true });
+            document.getElementById("giftHint").textContent = "You can open it now.💌";
+        }
+
+        function beginCountdown() {
+            if (countdownBusy || candleBlown) return;
+            countdownBusy = true;
+            startBtn.hidden = true;
+            messageEl.textContent = "Make a wish, My Boo! 💗";
+            const steps = ["3", "2", "1", "BLOW! 💨"];
+            let index = 0;
+            countdownEl.textContent = steps[0];
+            const timer = setInterval(() => {
+                index++;
+                if (index < steps.length) {
+                    countdownEl.textContent = steps[index];
+                    return;
+                }
+                clearInterval(timer);
+                /* Keep BLOW! on screen for four seconds, then extinguish the flame. */
+                countdownEl.textContent = "BLOW! 💨";
+                // messageEl.textContent = "Blow, birthday girl! 🌬️";
+                setTimeout(() => {
+                    unlockGift();
+                    countdownBusy = false;
+                    makeConfettiBurst(45);
+                }, 4000);
+            }, 1000);
+        }
+
+        function tryGift() {
+            if (!candleBlown) {
+                alert("Not so fast, Love. Blow the candle first. 😌🎂");
+                return;
+            }
+            showPage("couponsPage");
+            renderCoupons();
+        }
+
+        function makeConfettiBurst(amount) {
+            for (let i = 0; i < amount; i++) {
+                const bit = document.createElement("div");
+                bit.className = "confetti";
+                bit.style.left = Math.random() * 100 + "%";
+                bit.style.animationDuration = (2.5 + Math.random() * 3) + "s";
+                bit.style.animationDelay = "0s";
+                bit.style.background = ["#ff5d9e", "#ffd166", "#9c7bff", "#64d8cb", "#ff9866", "#fff"][Math.floor(Math.random() * 6)];
+                document.getElementById("party").appendChild(bit);
+                setTimeout(() => bit.remove(), 6000);
+            }
+        }
+
+        /* Restore progress: if she's started once, refresh always opens the cake slide.
+           If the candle was blown, preserve the extinguished flame and unlocked gift. */
+        const savedProgress = getProgress();
+        if (savedProgress.started) {
+            birthdayStarted = true;
+            showPage("birthday");
+        }
+        if (savedProgress.candleBlown) unlockGift();
+
+        /* One-time coupon redemption saved in this browser. */
+        const coupons = [
+            { id: "rant", title: "🎤 Professional Yap Session", description: "One uninterrupted rant. I must listen and take your side." },
+            { id: "right", title: "👑 The 'I'm Right' Pass", description: "You win one silly argument. No appeals allowed." },
+            { id: "hug", title: "🫂 Emergency Virtual Hug", description: "Redeem whenever you need some extra comfort." },
+            { id: "joke", title: "🥁 Terrible Joke Amnesty", description: "You must tolerate one of my worst jokes. Laughing is optional." },
+            { id: "date", title: "🍿 Your Choice Date", description: "You choose our next movie, game, or virtual date activity." },
+            { id: "song", title: "🎶 Personal Concert", description: "One birthday song or silly serenade, performed just for you." },
+            { id: "attention", title: "💌 Extra Attention", description: "A dedicated call or chat when we're both available." },
+            { id: "snacks", title: "🍰 Future Snack Debt", description: "One treat when we can safely meet in person." }
+        ];
+        const COUPON_KEY = "myBooBirthdayCoupons_v1";
+        function getUsedCoupons() { try { return JSON.parse(localStorage.getItem(COUPON_KEY) || "[]") } catch { return [] } }
+        function renderCoupons() {
+            const grid = document.getElementById("couponGrid"), used = getUsedCoupons(); grid.innerHTML = "";
+            coupons.forEach(c => {
+                const redeemed = used.includes(c.id), card = document.createElement("div"); card.className = "coupon" + (redeemed ? " used" : "");
+                const h = document.createElement("h3"); h.textContent = c.title;
+                const p = document.createElement("p"); p.textContent = c.description;
+                const b = document.createElement("button"); b.className = redeemed ? "secondary" : "primary"; b.textContent = redeemed ? "Already Redeemed ✓" : "Redeem Coupon 🎟️"; b.disabled = redeemed; b.onclick = () => redeemCoupon(c.id);
+                card.append(h, p, b); grid.appendChild(card);
+            });
+        }
+        function redeemCoupon(id) {
+            const c = coupons.find(x => x.id === id); if (!c) return; let used = getUsedCoupons();
+            if (used.includes(id)) { alert("Nice try, Love. This coupon has already been used! 😭"); renderCoupons(); return }
+            if (!confirm("Redeem " + c.title + "?\n\nOnce used, this coupon cannot be reused on this browser.")) return;
+            used.push(id);
+            try { localStorage.setItem(COUPON_KEY, JSON.stringify(used)) }
+            catch { alert("Your browser couldn't save this coupon. Please check browser storage."); return }
+            renderCoupons(); alert("Coupon redeemed! Enjoy your privilege, Boo. 💗");
+        }
+        flame.classList.remove("out");
+    </script>
+</body>
+
+</html>
