@@ -462,7 +462,7 @@
         }
 
         /* Screenshot-matched welcome card and birthday panel */
-        .welcome {
+        /* .welcome {
             background: linear-gradient(135deg, #ffb7d5, #ffe7ef, #e8d9ff);
         }
 
@@ -534,7 +534,7 @@
             #birthday .panel {
                 padding: 16px 12px 28px
             }
-        }
+        } */
     </style>
 </head>
 
@@ -567,10 +567,10 @@
                 </div>
                 <button class="gift locked" onclick="tryGift()" aria-label="Birthday present">🎁</button>
             </div>
-            <h2 id="countdown">Ready?</h2>
-            <p id="message">Make a wish! ✨</p>
+            <h2 id="countdown">Ready? Matte ne~</h2>
+            <p id="message">Wait for song to complete.</p>
             <button class="primary" id="startCountdown" onclick="beginCountdown()">Ready! 🎂</button>
-            <p id="giftHint" class="small">The present unlocks after the candle goes out. 🎁</p>
+            <!-- <p id="giftHint" class="small">🎁</p> -->
         </div>
     </section>
     <section class="page" id="couponsPage">
@@ -654,12 +654,12 @@
             candleBlown = true;
             flame.classList.add("out");
             countdownEl.textContent = "YEYYYYY!! 🎉";
-            messageEl.textContent = "IT WORKED! HAPPY BIRTHDAYYYYYY💖";
+            messageEl.textContent = "IT WORKED! HAPPY BIRTHDAYYYYYY!!!!!";
             startBtn.hidden = true;
             gift.classList.remove("locked");
             gift.classList.add("pulse");
             saveProgress({ started: true, candleBlown: true });
-            document.getElementById("giftHint").textContent = "You can open it now.💌";
+            document.getElementById("giftHint").textContent = "Present Boo present, Boop it!💌";
         }
 
         function beginCountdown() {
@@ -667,7 +667,7 @@
             countdownBusy = true;
             startBtn.hidden = true;
             messageEl.textContent = "Make a wish, My Boo! 💗";
-            const steps = ["3", "2", "1", "BLOW! 💨"];
+            const steps = ["3", "2", "1", "BLOW!"];
             let index = 0;
             countdownEl.textContent = steps[0];
             const timer = setInterval(() => {
@@ -678,13 +678,13 @@
                 }
                 clearInterval(timer);
                 /* Keep BLOW! on screen for four seconds, then extinguish the flame. */
-                countdownEl.textContent = "BLOW! 💨";
+                countdownEl.textContent = "BLOW!";
                 // messageEl.textContent = "Blow, birthday girl! 🌬️";
                 setTimeout(() => {
                     unlockGift();
                     countdownBusy = false;
                     makeConfettiBurst(45);
-                }, 4000);
+                }, 500);
             }, 1000);
         }
 
@@ -712,12 +712,12 @@
 
         /* Restore progress: if she's started once, refresh always opens the cake slide.
            If the candle was blown, preserve the extinguished flame and unlocked gift. */
-        const savedProgress = getProgress();
-        if (savedProgress.started) {
-            birthdayStarted = true;
-            showPage("birthday");
-        }
-        if (savedProgress.candleBlown) unlockGift();
+        // const savedProgress = getProgress();
+        // if (savedProgress.started) {
+        //     birthdayStarted = true;
+        //     showPage("birthday");
+        // }
+        // if (savedProgress.candleBlown) unlockGift();
 
         /* One-time coupon redemption saved in this browser. */
         const coupons = [
