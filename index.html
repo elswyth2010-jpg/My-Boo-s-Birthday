@@ -743,12 +743,12 @@
 
         /* Restore progress: if she's started once, refresh always opens the cake slide.
            If the candle was blown, preserve the extinguished flame and unlocked gift. */
-        const savedProgress = getProgress();
-        if (savedProgress.started) {
-            birthdayStarted = true;
-            showPage("birthday");
-        }
-        if (savedProgress.candleBlown) unlockGift();
+        // const savedProgress = getProgress();
+        // if (savedProgress.started) {
+        //     birthdayStarted = true;
+        //     showPage("birthday");
+        // }
+        // if (savedProgress.candleBlown) unlockGift();
 
         /* One-time coupon redemption saved in this browser. */
         const coupons = [
