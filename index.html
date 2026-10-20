@@ -540,6 +540,8 @@
 
 <body>
     <div id="party"></div>
+    <!-- Put your background music file beside this HTML file and name it background-music.mp3 -->
+    <audio id="backgroundMusic" src="background-music.mp3" loop preload="auto"></audio>
     <section class="page active welcome" id="welcome" aria-label="Tap anywhere to begin">
         <div class="welcome-card">
             <h1>HAPPY 21st BIRTHDAY BOO</h1>
@@ -587,6 +589,17 @@
     </section>
     <script>
         const party = document.getElementById("party");
+        const backgroundMusic = document.getElementById("backgroundMusic");
+        let backgroundMusicWanted = true;
+
+        // Try autoplay when the page opens. Browsers may block audio until the first tap.
+        function startBackgroundMusic() {
+            if (!backgroundMusicWanted) return;
+            backgroundMusic.play().catch(() => {
+                // Autoplay was blocked; try again after the visitor interacts with the page.
+            });
+        }
+        window.addEventListener("load", startBackgroundMusic);
         for (let i = 0; i < 65; i++) {
             const bit = document.createElement("div"); bit.className = "confetti";
             bit.style.left = Math.random() * 100 + "%";
@@ -611,6 +624,8 @@
         /* Browser-generated birthday melody; starts after her first tap. */
         let audioContext;
         function playBirthdaySong() {
+            // Pause the background track while the birthday melody plays.
+            backgroundMusic.pause();
             try {
                 audioContext = audioContext || new (window.AudioContext || window.webkitAudioContext)();
                 audioContext.resume();
@@ -623,7 +638,19 @@
                     gain.gain.setValueAtTime(.12, t + dur * .7); gain.gain.exponentialRampToValueAtTime(.0001, t + dur - .02);
                     osc.connect(gain); gain.connect(audioContext.destination); osc.start(t); osc.stop(t + dur); t += dur + .04;
                 });
-            } catch (e) { console.log("Audio unavailable", e); }
+                const songDurationMs = (t - audioContext.currentTime) * 1000;
+                window.setTimeout(() => {
+                    if (backgroundMusicWanted) {
+                        backgroundMusic.play().catch(() => {
+                            // If playback is blocked, the next user interaction can start it.
+                        });
+                    }
+                }, Math.max(0, songDurationMs));
+            } catch (e) {
+                console.log("Audio unavailable", e);
+                // If the birthday melody cannot play, return to the background track.
+                if (backgroundMusicWanted) backgroundMusic.play().catch(() => {});
+            }
         }
 
         function showPage(id) {
@@ -648,7 +675,11 @@
             playBirthdaySong();
             showPage("birthday");
         }
-        document.getElementById("welcome").addEventListener("click", startBirthday);
+        document.getElementById("welcome").addEventListener("click", () => {
+            // A tap unlocks audio playback in browsers that block autoplay.
+            startBackgroundMusic();
+            startBirthday();
+        });
 
         function unlockGift() {
             candleBlown = true;
